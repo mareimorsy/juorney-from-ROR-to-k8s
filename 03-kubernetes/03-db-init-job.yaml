@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init
+  namespace: drkiq
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-init
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: database_url
+              name: postgres
+        - name: SECRET_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: secret_token
+              name: drkiq
+        image: mareimorsy/drkiq:0.1
+        command: ["bash",  "-c", "cd /drkiq && rake db:reset && rake db:migrate"]
+      restartPolicy: Never
+  backoffLimit: 4

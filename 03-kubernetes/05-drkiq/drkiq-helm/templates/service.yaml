@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "drkiq.fullname" . }}
+  namespace: drkiq
+  labels:
+    app: {{ include "drkiq.name" . }}
+    chart: {{ include "drkiq.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "drkiq.name" . }}
+    release: {{ .Release.Name }}

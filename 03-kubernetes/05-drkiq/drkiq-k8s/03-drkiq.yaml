@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: drkiq
+  name: drkiq
+  namespace: drkiq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drkiq
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: drkiq
+    spec:
+      containers:
+      - env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: database_url
+              name: postgres
+        - name: SECRET_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: secret_token
+              name: drkiq
+        envFrom:
+        - configMapRef:
+            name: drkiq
+        image: mareimorsy/drkiq:0.1
+        imagePullPolicy: IfNotPresent
+        name: drkiq
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources: {}
